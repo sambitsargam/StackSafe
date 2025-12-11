@@ -1,5 +1,4 @@
-import { StacksTestnet, StacksMainnet } from "@stacks/network";
-import { PostConditionMode } from "@stacks/transactions";
+import { StacksTestnet } from "@stacks/network";
 
 const network = new StacksTestnet();
 

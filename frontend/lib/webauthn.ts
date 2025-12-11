@@ -1,19 +1,14 @@
 import {
   startRegistration,
   startAuthentication,
-  base64URLStringToBuffer,
-  bufferToBase64URLString,
 } from "@simplewebauthn/browser";
 import {
   generateRegistrationOptions,
   generateAuthenticationOptions,
-  verifyRegistrationResponse,
-  verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
 
 const WEBAUTHN_RP_ID = "stacksafe.local";
 const WEBAUTHN_RP_NAME = "StackSafe";
-const WEBAUTHN_ORIGIN = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
 
 export async function generateRegistrationChallenge() {
   const options = await generateRegistrationOptions({
@@ -44,11 +39,11 @@ export async function startWebAuthnAuthentication(options: any) {
   return authResp;
 }
 
-export async function generateRandomChallenge(length: number = 32): Promise<Uint8Array> {
-  return crypto.getRandomValues(new Uint8Array(length));
+export async function generateRandomChallenge(length: number = 32): Promise<Buffer> {
+  return Buffer.from(crypto.getRandomValues(new Uint8Array(length)));
 }
 
-export function challengeToHex(challenge: Uint8Array): string {
+export function challengeToHex(challenge: Uint8Array | Buffer): string {
   return "0x" + Array.from(challenge).map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
