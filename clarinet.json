@@ -1,0 +1,38 @@
+{
+  "name": "stacksafe",
+  "version": "0.1.0",
+  "description": "Passkey-Secured Smart Contract Wallet using Clarity 4",
+  "authors": ["sambitsargam"],
+  "license": "MIT",
+  "clarity-version": 2,
+  "costs": {
+    "computations": {
+      "secp256r1-verify": 900000
+    }
+  },
+  "contracts": [
+    {
+      "name": "stacksafe",
+      "path": "contracts/stacksafe.clar"
+    }
+  ],
+  "networks": {
+    "default": {
+      "name": "devnet",
+      "deployment-address": "ST1PQHQV0W8CRUMB6QVQ0GKWC54BB2XDC13Q6X69H"
+    },
+    "testnet": {
+      "name": "testnet",
+      "deployment-address": "ST1PQHQV0W8CRUMB6QVQ0GKWC54BB2XDC13Q6X69H"
+    },
+    "mainnet": {
+      "name": "mainnet"
+    }
+  },
+  "test-contracts": [
+    {
+      "name": "stacksafe-test",
+      "path": "tests/stacksafe-test.clar"
+    }
+  ]
+}
