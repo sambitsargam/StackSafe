@@ -14,7 +14,7 @@ export async function generateRegistrationChallenge() {
   const options = await generateRegistrationOptions({
     rpID: WEBAUTHN_RP_ID,
     rpName: WEBAUTHN_RP_NAME,
-    userID: new Uint8Array(16),
+    userID: Buffer.from(new Uint8Array(16)).toString('hex'),
     userName: "user",
     userDisplayName: "StackSafe User",
     attestationType: "none",

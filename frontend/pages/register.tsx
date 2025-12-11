@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { generateRegistrationChallenge, startWebAuthnRegistration, derivePublicKeyFromCredential, challengeToHex } from "@/lib/webauthn";
-import { openContractCall } from "@stacks/connect";
-import { contractAddress, contractName } from "@/lib/stacks";
+import { showContractCall } from "@stacks/connect";
+import { contractAddress, contractName, defaultCreateOptions } from "@/lib/stacks";
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
@@ -27,11 +27,12 @@ export default function RegisterPage() {
 
       setMessage("Registering passkey on-chain...");
 
-      openContractCall({
+      showContractCall({
         contractAddress: contractAddress.split(".")[0],
         contractName: contractName,
         functionName: "register-passkey",
         functionArgs: [pubkeyHexStr],
+        ...defaultCreateOptions,
         onFinish: () => {
           setMessage("Passkey registered successfully!");
         },

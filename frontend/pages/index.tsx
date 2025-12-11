@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import ConnectButton from "@/components/ConnectButton";
-import { openContractCall, callReadOnlyFunction } from "@stacks/connect";
-import { network, contractAddress, contractName } from "@/lib/stacks";
-import { generateAuthenticationChallenge, startWebAuthnAuthentication, challengeToHex } from "@/lib/webauthn";
+import { showContractCall } from "@stacks/connect";
+import { contractAddress, contractName, defaultCreateOptions } from "@/lib/stacks";
+import { generateAuthenticationChallenge, startWebAuthnAuthentication } from "@/lib/webauthn";
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
-  const [proposals, setProposals] = useState<any[]>([]);
+  const proposals: any[] = []; // TODO: Fetch from contract
   const [message, setMessage] = useState("");
   const [proposeAmount, setProposeAmount] = useState("");
   const [proposeTimelock, setProposeTimelock] = useState("");
@@ -19,17 +19,14 @@ export default function DashboardPage() {
       setMessage("Generating authentication challenge...");
 
       const options = await generateAuthenticationChallenge();
-      const challenge = options.challenge;
-
-      setMessage("Signing with passkey...");
-      const authResp = await startWebAuthnAuthentication(options);
+      await startWebAuthnAuthentication(options);
 
       const amount = BigInt(proposeAmount) * BigInt(1000000);
       const timelock = BigInt(proposeTimelock);
 
       setMessage("Proposing spend on-chain...");
 
-      openContractCall({
+      showContractCall({
         contractAddress: contractAddress.split(".")[0],
         contractName: contractName,
         functionName: "propose-spend",
@@ -39,6 +36,7 @@ export default function DashboardPage() {
           timelock.toString(),
           "0", // no approvals needed
         ],
+        ...defaultCreateOptions,
         onFinish: () => {
           setMessage("Spend proposed successfully!");
           setProposeAmount("");
@@ -61,11 +59,12 @@ export default function DashboardPage() {
       setLoading(true);
       setMessage("Executing spend...");
 
-      openContractCall({
+      showContractCall({
         contractAddress: contractAddress.split(".")[0],
         contractName: contractName,
         functionName: "execute-spend",
         functionArgs: [proposalId],
+        ...defaultCreateOptions,
         onFinish: () => {
           setMessage("Spend executed!");
         },

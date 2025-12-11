@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { openContractCall } from "@stacks/connect";
-import { contractAddress, contractName } from "@/lib/stacks";
+import { showConnect, disconnect } from "@stacks/connect";
 
 export default function ConnectButton() {
   const [connected, setConnected] = useState(false);
@@ -10,27 +9,32 @@ export default function ConnectButton() {
 
   const handleConnect = async () => {
     try {
-      openContractCall({
-        contractAddress: contractAddress.split(".")[0],
-        contractName: contractName,
-        functionName: "register-passkey",
-        functionArgs: [],
-        onFinish: () => {
-          setConnected(true);
-        },
-        onCancel: () => {
-          console.log("User cancelled");
+      showConnect({
+        appDetails: {
+          name: "StackSafe",
+          icon: "https://example.com/icon.png",
         },
       });
+      setConnected(true);
     } catch (error) {
       console.error("Connection error:", error);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      setConnected(false);
+      setAddress(null);
+    } catch (error) {
+      console.error("Disconnect error:", error);
     }
   };
 
   return (
     <div className="flex gap-4">
       <button
-        onClick={handleConnect}
+        onClick={connected ? handleDisconnect : handleConnect}
         className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
       >
         {connected ? `Connected: ${address?.slice(0, 8)}...` : "Connect Wallet"}
